@@ -1,58 +1,58 @@
-#include <iostream>
-#include <string>
+#include <cstdio>
+#include <cstring>
+#include <string.h>
 
-int maximum_length_of_symmetry(std::string& s) {
-    if (s.empty())
-        return 0;
-        
-    int end = s.length();
-    int maximum_length = 1;
-    
-    for (int begin=0; begin<end; ++begin) {
-        int begin_half_length = 1;
+char str[1000002 * 2];
+char buff[1000002];
+int p[1000002 * 2];
 
-        // odd
-        int left = begin - begin_half_length;
-        int right = begin + begin_half_length;
-        while (left>=0 && right <end && s[left] == s[right]) {
-            begin_half_length += 1;
-            left -= 1;
-            right += 1; 
+int maximum_size_of_symmetry(char* str) {
+
+    int mx = 0;
+    int id = 0;
+
+    int max_len = 0;
+
+    for (int i = 1; str[i]; ++i) {
+        if (i < mx) {
+            p[i] = mx - i;
+            if (p[i] > p[2 * id - i])
+                p[i] = p[2 * id - i];
         }
-        int odd_length =  2 * begin_half_length - 1;
-
-        // even
-        begin_half_length = 0;
-        left = begin - begin_half_length;
-        right = begin + 1 + begin_half_length ;
-
-        while (left>=0 && right <end && s[left] == s[right]) {
-            begin_half_length += 1;
-            left -= 1;
-            right += 1; 
+        else {
+            p[i] = 1;
         }
 
-        int even_length = 1;
-        if (begin_half_length > 0) 
-            even_length = 2 * (begin_half_length-1);
+        while (str[i-p[i]] == str[i+p[i]]) {
+            p[i] ++;
+        }
 
-        if (even_length > maximum_length)
-            maximum_length = even_length;
+        if (p[i] + i >= mx) {
+            mx = p[i] + i;
+            id = i;
+        }
 
-        if (odd_length > maximum_length)
-            maximum_length = odd_length;
+        if (max_len < p[i] - 1)
+            max_len = p[i] - 1;
     }
-    return maximum_length;
+    return max_len;
 }
 
+int main() {
+    int n;
+    str[0] = '$';
 
-int main(int argc, char* argv[]) {
-    int n=0;
-    std::cin >> n;
-    std::string s;
-    for (; n>0; n--) {
-        std::cin >> s;
-        std::cout << maximum_length_of_symmetry(s) << std::endl;
+    scanf("%d", &n);
+    while (n--) {
+        scanf("%s", buff);
+        int i=0;
+        for (i=0; buff[i]; ++i) {
+            str[2 * i + 1] = '#';
+            str[2 * i + 2] = buff[i];
+        }
+        str[2*i+1] = '#';
+        str[2*i+2] = '\0';
+        printf("%d\n", maximum_size_of_symmetry(str));
     }
-    return 1; 
+    return 0;
 }
