@@ -23,12 +23,12 @@ int baoli(char* pat, char* src) {
 
 int kmp(char* pat, char* src) {
     int psize = strlen(pat);
-    int ssize = strlen(src); 
+    int ssize = strlen(src);
 
     // 计算next数组
     int* next = reinterpret_cast<int*>(calloc(psize+10, sizeof(int)));
     next[0] = -1;
-    int j=0,k=-1;
+    int j=0, k=-1;
     while (j<psize) {
         if (k==-1 || pat[j] == pat[k]) {
             j++; k++;
@@ -58,6 +58,30 @@ int kmp(char* pat, char* src) {
     return count;
 }
 
+int kmp_short(char* pat, char* src) {
+    int psize = strlen(pat);
+    int ssize = strlen(src);
+    int count = 0;
+
+    int *next = new int[psize + 100];
+    next[0] = -1;
+    int j=0, k=0;
+
+    while (j<ssize) {
+        if (k==-1 || src[j] == pat[k]) {
+            j++; k++;
+            next[k+1] = k;
+            if (k==psize)
+                count ++;
+        }
+        else {
+            k = next[k];
+        }
+    }
+    delete next;
+    return count;
+}
+
 int main() {
     int n=0;
     scanf("%d", &n);
@@ -69,6 +93,6 @@ int main() {
         scanf("%s", pat);
         scanf("%s", src);
 
-        printf("%d\n", kmp(pat, src));
+        printf("%d\n", kmp_short(pat, src));
     }
 }
