@@ -82,6 +82,7 @@ public:
             i++;
         }
 
+        p->num_child ++;
         p->is_word = true;
         return true;
     }
